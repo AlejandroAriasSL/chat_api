@@ -1,6 +1,9 @@
-package com.chat.chat_api;
+package com.chat.chat_api.message;
 
 import java.time.LocalDateTime;
+
+import com.chat.chat_api.chatroom.Chatroom;
+import com.chat.chat_api.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -49,6 +52,6 @@ public class Message {
     public Chatroom getChat() { return chat; }
 
     public void setContent(String content) { this.content = content; }
-    
+
 }
 

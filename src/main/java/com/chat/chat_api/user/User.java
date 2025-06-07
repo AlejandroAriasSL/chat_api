@@ -1,6 +1,8 @@
-package com.chat.chat_api;
+package com.chat.chat_api.user;
 
 import java.util.List;
+
+import com.chat.chat_api.chatroom.Chatroom;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
