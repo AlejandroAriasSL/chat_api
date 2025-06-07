@@ -10,7 +10,7 @@ public class ChatController {
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
 
-    public Message send(Message message) {
-        return new Message(message.timestamp(), message.content(), message.senderUsername());
+    public MessageDTO send(MessageDTO message) {
+        return new MessageDTO(message.timestamp(), message.content(), message.senderUsername());
     }
 }
