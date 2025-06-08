@@ -50,7 +50,9 @@ public class Chatroom {
         messages.add(message);
     }
 
-    
+    public Long getId() {
+        return id;
+    }
     public String getName() { return name; }
     public List<User> getChatUsers() { return chatUsers; }
     public List<Message> getMessages() { return messages; }
