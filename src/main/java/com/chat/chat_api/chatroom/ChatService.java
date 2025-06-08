@@ -12,11 +12,9 @@ import com.chat.chat_api.user.UserService;
 public class ChatService {
 
     private final ChatroomRepository repository;
-    private final UserService userService;
 
-    public ChatService(final ChatroomRepository repository, final UserService userService){
+    public ChatService(final ChatroomRepository repository){
         this.repository = repository;
-        this.userService = userService;
     }
 
     @Transactional
@@ -40,12 +38,4 @@ public class ChatService {
         repository.deleteById(id);
     }
 
-    @Transactional
-    public Chatroom addParticipant(Long chatroomId, Long userId) throws RuntimeException {
-        Chatroom chatroom = getById(chatroomId);
-        User user = userService.getById(userId);
-
-        chatroom.addUser(user);
-        return repository.save(chatroom);
-    }
 }
