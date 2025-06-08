@@ -16,8 +16,8 @@ public class UserService {
     }
 
     @Transactional
-    public User createOrUpdate(User user){
-       return repository.save(user); 
+    public User createOrUpdate(CreateUser request){
+       return repository.save(new User(request.username())); 
     }
 
     public User getById(Long id) throws RuntimeException {
