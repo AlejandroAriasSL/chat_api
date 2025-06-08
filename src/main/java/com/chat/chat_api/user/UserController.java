@@ -20,10 +20,10 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody CreateUser request){
+    public ResponseEntity<UserDTO> createUser(@RequestBody CreateUser request){
         User response = userService.createOrUpdate(request);
         URI location = URI.create("api/v1/users" + "/" + response.getId());
-        return ResponseEntity.created(location).body(response);
+        return ResponseEntity.created(location).body(UserDTO.toDto(response));
     }
 
     @PostMapping("/{userId}/chats")
