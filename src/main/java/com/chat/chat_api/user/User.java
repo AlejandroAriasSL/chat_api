@@ -1,5 +1,6 @@
 package com.chat.chat_api.user;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.chat.chat_api.chatroom.Chatroom;
@@ -31,19 +32,14 @@ public class User {
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "chatroom_id")
     )
-    private List<Chatroom> chats;
+    private List<Chatroom> chats = new ArrayList<>();
 
     public User(){}
 
     public User(String username){
-        this.username = username;
+        this.username = username; 
     }
 
-    public String getUsername(){
-        return username;
-    }
-
-    public List<Chatroom> getChat(){
-        return chats;
-    }
+    public String getUsername(){ return username; }
+    public List<Chatroom> getChat(){ return chats; }
 }
