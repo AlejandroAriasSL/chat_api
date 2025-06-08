@@ -5,13 +5,18 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.chat.chat_api.user.User;
+import com.chat.chat_api.user.UserService;
+
 @Service
 public class ChatService {
 
     private final ChatroomRepository repository;
+    private final UserService userService;
 
-    public ChatService(final ChatroomRepository repository){
+    public ChatService(final ChatroomRepository repository, final UserService userService){
         this.repository = repository;
+        this.userService = userService;
     }
 
     @Transactional
@@ -33,5 +38,14 @@ public class ChatService {
             throw new RuntimeException("Chat doesn't exist!");
         }
         repository.deleteById(id);
+    }
+
+    @Transactional
+    public Chatroom addParticipant(Long chatroomId, Long userId) throws RuntimeException {
+        Chatroom chatroom = getById(chatroomId);
+        User user = userService.getById(userId);
+
+        chatroom.addUser(user);
+        return repository.save(chatroom);
     }
 }
