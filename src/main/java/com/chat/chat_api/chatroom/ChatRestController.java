@@ -20,12 +20,12 @@ public class ChatRestController {
     }
 
     @PostMapping
-    public ResponseEntity<Chatroom> createChat(@RequestBody Chatroom chat){
+    public ResponseEntity<Chatroom> createChat(@RequestBody CreateChat chat){
         return ResponseEntity.ok(chatService.createOrUpdate(chat)); 
     }
 
     @GetMapping
-    public ResponseEntity<List<Chatroom>> getAllChats(){
+    public ResponseEntity<List<ChatDTO>> getAllChats(){
         return ResponseEntity.ok(chatService.getAll());
     }
 }

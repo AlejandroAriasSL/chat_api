@@ -5,9 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.chat.chat_api.user.User;
-import com.chat.chat_api.user.UserService;
-
 @Service
 public class ChatService {
 
@@ -18,16 +15,18 @@ public class ChatService {
     }
 
     @Transactional
-    public Chatroom createOrUpdate(Chatroom chat){
-        return repository.save(chat);
+    public Chatroom createOrUpdate(CreateChat chat){
+        return repository.save(new Chatroom(chat.chatName()));
     }
 
     public Chatroom getById(Long id) throws RuntimeException {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("Chat not found!"));
     }
 
-    public List<Chatroom> getAll(){
-        return repository.findAll();
+    public List<ChatDTO> getAll(){
+        return repository.findAll().stream()
+                                   .map(ChatDTO::toDTO)
+                                   .toList();
     }
 
     @Transactional
