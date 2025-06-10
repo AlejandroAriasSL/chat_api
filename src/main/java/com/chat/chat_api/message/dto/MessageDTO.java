@@ -1,4 +1,4 @@
-package com.chat.chat_api.message;
+package com.chat.chat_api.message.dto;
 
 import java.time.LocalDateTime;
 

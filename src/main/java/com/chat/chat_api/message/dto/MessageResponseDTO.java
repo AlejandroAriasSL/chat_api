@@ -1,6 +1,8 @@
-package com.chat.chat_api.message;
+package com.chat.chat_api.message.dto;
 
 import java.time.LocalDateTime;
+
+import com.chat.chat_api.message.Message;
 
 public record MessageResponseDTO(
     Long id, 

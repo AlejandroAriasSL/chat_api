@@ -5,6 +5,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import com.chat.chat_api.message.dto.MessageDTO;
+
 @Controller
 public class MessageController {
 

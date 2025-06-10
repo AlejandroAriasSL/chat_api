@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 
 import com.chat.chat_api.chatroom.ChatService;
 import com.chat.chat_api.chatroom.Chatroom;
+import com.chat.chat_api.message.dto.MessageDTO;
+import com.chat.chat_api.message.dto.MessageResponseDTO;
 import com.chat.chat_api.user.User;
 import com.chat.chat_api.user.UserService;
 
