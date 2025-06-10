@@ -5,7 +5,7 @@ import java.util.List;
 import com.chat.chat_api.message.MessageResponseDTO;
 
 public record ChatroomSummaryDTO(
-    Long id,
-    String name,
+    Long roomId,
+    String chatName,
     List<MessageResponseDTO> messages
 ){}
