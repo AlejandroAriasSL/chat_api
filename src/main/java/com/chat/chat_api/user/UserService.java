@@ -11,6 +11,7 @@ import com.chat.chat_api.message.dto.MessageResponseDTO;
 import com.chat.chat_api.user.dto.CreateUserRequestDTO;
 import com.chat.chat_api.user.dto.UserChatsDTO;
 import com.chat.chat_api.user.dto.UserDTO;
+import com.chat.chat_api.user.exception.UserNotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -30,9 +31,9 @@ public class UserService {
        return repository.save(new User(request.username())); 
     }
 
-    public User getById(Long id) throws RuntimeException {
+    public User getById(Long id) throws UserNotFoundException {
         return repository.findById(id)
-                         .orElseThrow(() -> new RuntimeException("User not found!"));
+                         .orElseThrow(() -> new UserNotFoundException(id));
     }
 
     public List<User> getAll(){
@@ -40,9 +41,9 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteById(Long id) throws RuntimeException {
+    public void deleteById(Long id) throws UserNotFoundException {
         if (!repository.existsById(id)){
-            throw new RuntimeException("User doesn't exist!");
+            throw new UserNotFoundException(id);
         }
         repository.deleteById(id);
     }
