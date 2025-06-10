@@ -8,4 +8,14 @@ public record MessageResponseDTO(
     LocalDateTime timestamp,
     Long senderId,
     String senderUsername
-){}
+){
+    public static MessageResponseDTO toDTO(Message message){
+        return new MessageResponseDTO(
+            message.getId(),
+            message.getContent(),
+            message.getTimestamp(),
+            message.getSender().getId(),
+            message.getSender().getUsername() 
+        );  
+    }
+}

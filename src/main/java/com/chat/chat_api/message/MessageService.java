@@ -26,19 +26,11 @@ public class MessageService {
 
     public MessageResponseDTO createOrUpdate(Long chatId, MessageDTO messageDto){
         Chatroom chat = chatService.getById(chatId);
-        
         User user = userService.getById(messageDto.senderId());
 
         Message message = new Message(messageDto.timestamp(), messageDto.content(), user, chat);
-
         repository.save(message);
 
-        return new MessageResponseDTO(
-            message.getId(),
-            message.getContent(),
-            message.getTimestamp(),
-            message.getSender().getId(),
-            message.getSender().getUsername()
-        );
+        return MessageResponseDTO.toDTO(message);
     }
 }
