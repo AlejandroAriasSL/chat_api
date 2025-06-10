@@ -2,7 +2,7 @@ package com.chat.chat_api.user;
 
 import java.util.List;
 
-import com.chat.chat_api.chatroom.ChatroomSummaryDTO;
+import com.chat.chat_api.chatroom.dto.ChatroomSummaryDTO;
 
 public record UserChatsDTO(
     Long userId,

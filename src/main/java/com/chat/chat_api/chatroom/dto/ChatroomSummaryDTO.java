@@ -1,4 +1,4 @@
-package com.chat.chat_api.chatroom;
+package com.chat.chat_api.chatroom.dto;
 
 import java.util.List;
 

@@ -5,6 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.chat.chat_api.chatroom.dto.ChatDTO;
+import com.chat.chat_api.chatroom.dto.CreateChatRequestDTO;
+
 @Service
 public class ChatService {
 
@@ -15,7 +18,7 @@ public class ChatService {
     }
 
     @Transactional
-    public Chatroom createOrUpdate(CreateChat chat){
+    public Chatroom createOrUpdate(CreateChatRequestDTO chat){
         return repository.save(new Chatroom(chat.chatName()));
     }
 

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.chat.chat_api.chatroom.ChatService;
 import com.chat.chat_api.chatroom.Chatroom;
-import com.chat.chat_api.chatroom.ChatroomSummaryDTO;
+import com.chat.chat_api.chatroom.dto.ChatroomSummaryDTO;
 import com.chat.chat_api.message.MessageResponseDTO;
 
 import jakarta.transaction.Transactional;
