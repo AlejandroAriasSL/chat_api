@@ -8,6 +8,9 @@ import com.chat.chat_api.chatroom.ChatService;
 import com.chat.chat_api.chatroom.Chatroom;
 import com.chat.chat_api.chatroom.dto.ChatroomSummaryDTO;
 import com.chat.chat_api.message.dto.MessageResponseDTO;
+import com.chat.chat_api.user.dto.CreateUserRequestDTO;
+import com.chat.chat_api.user.dto.UserChatsDTO;
+import com.chat.chat_api.user.dto.UserDTO;
 
 import jakarta.transaction.Transactional;
 
@@ -23,7 +26,7 @@ public class UserService {
     }
 
     @Transactional
-    public User createOrUpdate(CreateUser request){
+    public User createOrUpdate(CreateUserRequestDTO request){
        return repository.save(new User(request.username())); 
     }
 

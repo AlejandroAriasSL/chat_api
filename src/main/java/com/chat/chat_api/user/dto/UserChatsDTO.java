@@ -1,8 +1,9 @@
-package com.chat.chat_api.user;
+package com.chat.chat_api.user.dto;
 
 import java.util.List;
 
 import com.chat.chat_api.chatroom.dto.ChatroomSummaryDTO;
+import com.chat.chat_api.user.User;
 
 public record UserChatsDTO(
     Long userId,

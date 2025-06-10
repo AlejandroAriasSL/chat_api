@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.chat.chat_api.user.dto.CreateUserRequestDTO;
+import com.chat.chat_api.user.dto.UserChatsDTO;
+import com.chat.chat_api.user.dto.UserDTO;
+
 @RestController
 @RequestMapping("api/v1/users")
 public class UserController {
@@ -21,7 +25,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody CreateUser request){
+    public ResponseEntity<UserDTO> createUser(@RequestBody CreateUserRequestDTO request){
         User response = userService.createOrUpdate(request);
         URI location = URI.create("api/v1/users" + "/" + response.getId());
         return ResponseEntity.created(location).body(UserDTO.toDto(response));
