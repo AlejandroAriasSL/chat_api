@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.chat.chat_api.chatroom.ChatService;
 import com.chat.chat_api.chatroom.Chatroom;
+import com.chat.chat_api.chatroom.ChatroomSummaryDTO;
+import com.chat.chat_api.message.MessageResponseDTO;
 
 import jakarta.transaction.Transactional;
 
@@ -54,5 +56,22 @@ public class UserService {
 
         User savedUser = repository.save(user);
         return UserDTO.toDto(savedUser);
+    }
+
+    public UserChatsDTO getUserChats(Long userId){
+        User user = getById(userId);
+
+        List<ChatroomSummaryDTO> userChats = user.getChats()
+          .stream()
+          .map(chat -> {
+            List<MessageResponseDTO> messageResponseDTOs = chat.getMessages()
+              .stream()
+              .map(MessageResponseDTO::toDTO)
+              .toList();
+                                                        
+            return new ChatroomSummaryDTO(chat.getId(), chat.getName(), messageResponseDTOs);
+          }).toList();
+
+        return new UserChatsDTO(userId, user.getUsername(), userChats);
     }
 }

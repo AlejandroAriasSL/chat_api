@@ -3,6 +3,7 @@ package com.chat.chat_api.user;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,5 +30,10 @@ public class UserController {
     @PostMapping("/{userId}/chats")
     public ResponseEntity<UserDTO> addChatToUser(@PathVariable Long userId, @RequestBody Long chatId){
         return ResponseEntity.ok(userService.addChatToUser(userId, chatId));
+    }
+
+    @GetMapping("/{userId}/chats")
+    public ResponseEntity<UserChatsDTO> getUserChats(@PathVariable Long userId){
+        return ResponseEntity.ok(userService.getUserChats(userId));
     }
 }
