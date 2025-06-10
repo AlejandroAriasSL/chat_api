@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import com.chat.chat_api.message.Message;
 
 public record MessageResponseDTO(
-    Long id, 
+    Long messageId, 
     String content, 
     LocalDateTime timestamp,
     Long senderId,
