@@ -5,5 +5,5 @@ import java.time.LocalDateTime;
 public record MessageDTO(
     LocalDateTime timestamp, 
     String content, 
-    String senderUsername
+    Long senderId
 ){}
