@@ -85,4 +85,15 @@ public class UserServiceTest {
         assertThat(userService.getAll(), is(equalTo(expectedUsers)));
         verify(userRepository, times(1)).findAll();
     }
+
+    @Test
+    @DisplayName("UserService deletes player when player found")
+    void test_deletes_player_when_player_found(){
+
+        when(userRepository.existsById(id)).thenReturn(true);
+
+        userService.deleteById(id);
+
+        verify(userRepository, times(1)).deleteById(id);
+    }
 }
