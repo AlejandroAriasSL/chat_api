@@ -40,6 +40,11 @@ public class User {
         this.username = username; 
     }
 
+    public User(String username, Long id){
+        this.username = username;
+        this.id = id;
+    }
+
     public Long getId() { return id; }
     public String getUsername(){ return username; }
     public List<Chatroom> getChats(){ return chats; }
