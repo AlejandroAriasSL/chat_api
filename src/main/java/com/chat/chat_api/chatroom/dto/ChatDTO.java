@@ -15,4 +15,8 @@ public record ChatDTO(Long roomId, String chatName, List<Long> usersId) {
                                  
         return new ChatDTO(chat.getId(), chat.getName(), userIds);
     }
+
+    public static Chatroom toEntity(ChatDTO chatDTO){
+        return new Chatroom(chatDTO.chatName(), chatDTO.roomId());
+    }
 }

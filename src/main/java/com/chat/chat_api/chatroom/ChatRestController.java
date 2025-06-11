@@ -23,7 +23,7 @@ public class ChatRestController {
     }
 
     @PostMapping
-    public ResponseEntity<Chatroom> createChat(@RequestBody CreateChatRequestDTO chat){
+    public ResponseEntity<ChatDTO> createChat(@RequestBody CreateChatRequestDTO chat){
         return ResponseEntity.ok(chatService.createOrUpdate(chat)); 
     }
 

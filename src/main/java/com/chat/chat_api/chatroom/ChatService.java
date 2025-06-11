@@ -19,8 +19,9 @@ public class ChatService {
     }
 
     @Transactional
-    public Chatroom createOrUpdate(CreateChatRequestDTO chat){
-        return repository.save(new Chatroom(chat.chatName()));
+    public ChatDTO createOrUpdate(CreateChatRequestDTO chat){
+        Chatroom savedChat = repository.save(new Chatroom(chat.chatName()));
+        return ChatDTO.toDTO(savedChat);
     }
 
     public Chatroom getById(Long id) throws ChatNotFoundException {

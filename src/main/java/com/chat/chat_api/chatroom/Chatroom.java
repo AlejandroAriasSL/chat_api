@@ -38,6 +38,11 @@ public class Chatroom {
         this.name = name;
     }
 
+    public Chatroom(final String name, final Long id){
+        this.name = name;
+        this.id = id;
+    }
+
     public void setName(final String name) {
         this.name = name;
     }
