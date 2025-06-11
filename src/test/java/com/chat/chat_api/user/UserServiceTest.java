@@ -48,6 +48,18 @@ public class UserServiceTest {
         userService = new UserService(userRepository, chatService);
     }
 
+    private void verifyAddChatToUserInteractions(User mockUser, Chatroom mockChat){
+        verify(userRepository, times(1)).findById(mockUser.getId());
+        verify(chatRepository, times(1)).findById(mockChat.getId());
+        verify(userRepository, times(1)).save(mockUser);
+    }
+
+    private void mockAddChatToUserImplementation(User mockUser, Chatroom mockChat){
+        when(userRepository.findById(mockUser.getId())).thenReturn(Optional.of(mockUser));
+        when(chatRepository.findById(mockChat.getId())).thenReturn(Optional.of(mockChat));
+        when(userRepository.save(mockUser)).thenReturn(mockUser);
+    }
+
     @Test
     @DisplayName("UserService succesfully creates user")
     void test_user_is_created(){
@@ -116,18 +128,13 @@ public class UserServiceTest {
 
         Chatroom mockChat = new Chatroom("mockChat", id);
         User mockUser = new User(username, id);
-        
-        when(userRepository.findById(id)).thenReturn(Optional.of(mockUser));
-        when(chatRepository.findById(id)).thenReturn(Optional.of(mockChat));
-        when(userRepository.save(mockUser)).thenReturn(mockUser);
 
+        mockAddChatToUserImplementation(mockUser, mockChat);
         UserDTO userChats = userService.addChatToUser(id, 1L);
 
         assertThat(userChats.chatIds(), hasItem(mockChat.getId()));
         
-        verify(userRepository, times(1)).findById(id);
-        verify(userRepository, times(1)).save(mockUser);
-        verify(chatRepository, times(1)).findById(id);
+        verifyAddChatToUserInteractions(mockUser, mockChat);
     }
 
     @Test
@@ -140,17 +147,12 @@ public class UserServiceTest {
         mockUser.getChats().add(mockChat);
         assertThat(mockUser.getChats(), hasSize(1));
 
-        when(userRepository.findById(id)).thenReturn(Optional.of(mockUser));
-        when(chatRepository.findById(id)).thenReturn(Optional.of(mockChat));
-        when(userRepository.save(mockUser)).thenReturn(mockUser);
-
+        mockAddChatToUserImplementation(mockUser, mockChat);
         UserDTO userChats = userService.addChatToUser(id, 1L);
 
         assertThat(userChats.chatIds(), hasItem(mockChat.getId()));
         assertThat(userChats.chatIds(), hasSize(1));
 
-        verify(userRepository, times(1)).findById(id);
-        verify(userRepository, times(1)).save(mockUser);
-        verify(chatRepository, times(1)).findById(id);
+        verifyAddChatToUserInteractions(mockUser, mockChat);;
     }
 }
