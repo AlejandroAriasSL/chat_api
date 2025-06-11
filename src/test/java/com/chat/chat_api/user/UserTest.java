@@ -21,4 +21,17 @@ public class UserTest {
         assertNull(user.getUsername());
         assertThat(user.getChats().isEmpty(), is(equalTo(true)));
     }
+
+    @Test
+    @DisplayName("User has correct attributes after initialization")
+    void test_user_has_correct_attributes_after_initialization(){
+        
+        String name = "Usuario1";
+        Long id = 1L;
+
+        User user = new User(name, id);
+
+        assertThat(user.getUsername(), is(equalTo(name)));
+        assertThat(user.getId(), is(equalTo(id)));
+    }
 }
