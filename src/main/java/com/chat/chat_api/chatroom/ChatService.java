@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.chat.chat_api.chatroom.dto.ChatDTO;
 import com.chat.chat_api.chatroom.dto.CreateChatRequestDTO;
+import com.chat.chat_api.chatroom.exception.ChatNotFoundException;
 
 @Service
 public class ChatService {
@@ -22,8 +23,8 @@ public class ChatService {
         return repository.save(new Chatroom(chat.chatName()));
     }
 
-    public Chatroom getById(Long id) throws RuntimeException {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("Chat not found!"));
+    public Chatroom getById(Long id) throws ChatNotFoundException {
+        return repository.findById(id).orElseThrow(() -> new ChatNotFoundException(id));
     }
 
     public List<ChatDTO> getAll(){
@@ -33,9 +34,9 @@ public class ChatService {
     }
 
     @Transactional
-    public void deleteById(Long id) throws RuntimeException{
+    public void deleteById(Long id) throws ChatNotFoundException {
         if (!repository.existsById(id)){
-            throw new RuntimeException("Chat doesn't exist!");
+            throw new ChatNotFoundException(id);
         }
         repository.deleteById(id);
     }
