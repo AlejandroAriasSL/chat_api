@@ -3,6 +3,7 @@ package com.chat.chat_api.user;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -124,6 +125,30 @@ public class UserServiceTest {
 
         assertThat(userChats.chatIds(), hasItem(mockChat.getId()));
         
+        verify(userRepository, times(1)).findById(id);
+        verify(userRepository, times(1)).save(mockUser);
+        verify(chatRepository, times(1)).findById(id);
+    }
+
+    @Test
+    @DisplayName("UserService doesnt duplicate chat if user already joined")
+    void test_doesnt_add_chat_to_user_if_already_contains_it(){
+
+        Chatroom mockChat = new Chatroom("mockChat", id);
+        User mockUser = new User(username, id);
+
+        mockUser.getChats().add(mockChat);
+        assertThat(mockUser.getChats(), hasSize(1));
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(mockUser));
+        when(chatRepository.findById(id)).thenReturn(Optional.of(mockChat));
+        when(userRepository.save(mockUser)).thenReturn(mockUser);
+
+        UserDTO userChats = userService.addChatToUser(id, 1L);
+
+        assertThat(userChats.chatIds(), hasItem(mockChat.getId()));
+        assertThat(userChats.chatIds(), hasSize(1));
+
         verify(userRepository, times(1)).findById(id);
         verify(userRepository, times(1)).save(mockUser);
         verify(chatRepository, times(1)).findById(id);
