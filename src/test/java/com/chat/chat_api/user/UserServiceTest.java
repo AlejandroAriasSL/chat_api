@@ -20,7 +20,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.chat.chat_api.chatroom.ChatService;
 import com.chat.chat_api.chatroom.Chatroom;
 import com.chat.chat_api.chatroom.ChatroomRepository;
 import com.chat.chat_api.chatroom.dto.ChatroomSummaryDTO;
@@ -29,6 +28,7 @@ import com.chat.chat_api.user.dto.CreateUserRequestDTO;
 import com.chat.chat_api.user.dto.UserChatsDTO;
 import com.chat.chat_api.user.dto.UserDTO;
 import com.chat.chat_api.user.exception.UserNotFoundException;
+import com.chat.chat_api.utils.UserServiceTestContext;
 
 @DisplayName("UserService unit tests")
 public class UserServiceTest {
@@ -36,46 +36,33 @@ public class UserServiceTest {
     private String username = "Usuario1";
     private final Long id = 1L;
 
-    private UserRepository userRepository;
-    private ChatroomRepository chatRepository;
-    private ChatService chatService;
+    private User mockUser;
+    private UserServiceTestContext context;
     private CreateUserRequestDTO createUserRequest;
-    private UserService userService;
-
 
     @BeforeEach
     void setUp(){
-        userRepository = mock(UserRepository.class);
-        chatRepository = mock(ChatroomRepository.class);
-        chatService =  new ChatService(chatRepository);
+        context = new UserServiceTestContext();
         createUserRequest = new CreateUserRequestDTO(username);
-        userService = new UserService(userRepository, chatService);
+        mockUser = context.createMockUser(username, id);
     }
 
-    private void verifyAddChatToUserInteractions(User mockUser, Chatroom mockChat){
-        verify(userRepository, times(1)).findById(mockUser.getId());
-        verify(chatRepository, times(1)).findById(mockChat.getId());
-        verify(userRepository, times(1)).save(mockUser);
-    }
+    private UserService getUserService(){ return context.getUserService(); }
 
-    private void mockAddChatToUserImplementation(User mockUser, Chatroom mockChat){
-        when(userRepository.findById(mockUser.getId())).thenReturn(Optional.of(mockUser));
-        when(chatRepository.findById(mockChat.getId())).thenReturn(Optional.of(mockChat));
-        when(userRepository.save(mockUser)).thenReturn(mockUser);
-    }
+    private UserRepository getUserRepository(){ return context.getUserRepository(); }
+
+    private ChatroomRepository getChatRepository(){ return context.getChatRepository(); }
 
     @Test
     @DisplayName("UserService succesfully creates user")
     void test_user_is_created(){
-       
-       User mockUser = new User(createUserRequest.username());
 
-       when(userRepository.save(any(User.class))).thenReturn(mockUser);
+       when(getUserRepository().save(any(User.class))).thenReturn(mockUser);
 
-       User savedUser = userService.createOrUpdate(createUserRequest);
+       User savedUser = getUserService().createOrUpdate(createUserRequest);
        
        assertThat(savedUser, is(equalTo(mockUser)));
-       verify(userRepository, times(1)).save(any(User.class));
+       verify(getUserRepository(), times(1)).save(any(User.class));
     }
 
 
@@ -83,47 +70,44 @@ public class UserServiceTest {
     @DisplayName("UserService returns user by id when found")
     void test_user_found_by_id(){
 
-        User mockUser = new User(createUserRequest.username(), id);
-
-        when(userRepository.findById(mockUser.getId())).thenReturn(Optional.of(mockUser));
+        when(getUserRepository().findById(mockUser.getId())).thenReturn(Optional.of(mockUser));
         
-        User foundUser = userService.getById(id);
+        User foundUser = getUserService().getById(id);
 
         assertThat(foundUser, is(equalTo(mockUser)));
-        verify(userRepository, times(1)).findById(id);
+        verify(getUserRepository(), times(1)).findById(id);
     }
 
     @Test
     @DisplayName("UserService retrieves all users")
     void test_retrieves_all_users(){
 
-        User mockUser = new User(createUserRequest.username(), id);
-        User mockUser2 = new User(createUserRequest.username(), 2L);
+        User mockUser2 = context.createMockUser(username, 2L);
 
-        when(userRepository.findAll()).thenReturn(List.of(mockUser, mockUser2));
+        when(getUserRepository().findAll()).thenReturn(List.of(mockUser, mockUser2));
 
         List<User> expectedUsers = List.of(mockUser, mockUser2);
 
-        assertThat(userService.getAll(), is(equalTo(expectedUsers)));
-        verify(userRepository, times(1)).findAll();
+        assertThat(getUserService().getAll(), is(equalTo(expectedUsers)));
+        verify(getUserRepository(), times(1)).findAll();
     }
 
     @Test
     @DisplayName("UserService deletes player when player found")
     void test_deletes_player_when_player_found(){
 
-        when(userRepository.existsById(id)).thenReturn(true);
+        when(getUserRepository().existsById(id)).thenReturn(true);
 
-        userService.deleteById(id);
+        getUserService().deleteById(id);
 
-        verify(userRepository, times(1)).deleteById(id);
+        verify(getUserRepository(), times(1)).deleteById(id);
     }
 
     @Test
     @DisplayName("UserService throws exception when player not found before deleting")
     void test_throws_exception_if_doesnt_exist_before_deletion(){
 
-        assertThrows(UserNotFoundException.class, () -> userService.deleteById(id));
+        assertThrows(UserNotFoundException.class, () -> context.getUserService().deleteById(id));
     }
 
     @Test
@@ -131,14 +115,13 @@ public class UserServiceTest {
     void test_adds_chat_to_user(){
 
         Chatroom mockChat = new Chatroom("mockChat", id);
-        User mockUser = new User(username, id);
 
-        mockAddChatToUserImplementation(mockUser, mockChat);
-        UserDTO userChats = userService.addChatToUser(id, 1L);
+        context.mockAddChatToUserImplementation(mockUser, mockChat);
+        UserDTO userChats = getUserService().addChatToUser(id, 1L);
 
         assertThat(userChats.chatIds(), hasItem(mockChat.getId()));
 
-        verifyAddChatToUserInteractions(mockUser, mockChat);
+        context.verifyAddChatToUserInteractions(mockUser, mockChat);
     }
 
     @Test
@@ -146,18 +129,18 @@ public class UserServiceTest {
     void test_doesnt_add_chat_to_user_if_already_contains_it(){
 
         Chatroom mockChat = new Chatroom("mockChat", id);
-        User mockUser = new User(username, id);
+        User mockUser = context.createMockUser(username, id);
 
         mockUser.getChats().add(mockChat);
         assertThat(mockUser.getChats(), hasSize(1));
 
-        mockAddChatToUserImplementation(mockUser, mockChat);
-        UserDTO userChats = userService.addChatToUser(id, 1L);
+        context.mockAddChatToUserImplementation(mockUser, mockChat);
+        UserDTO userChats = getUserService().addChatToUser(id, 1L);
 
         assertThat(userChats.chatIds(), hasItem(mockChat.getId()));
         assertThat(userChats.chatIds(), hasSize(1));
 
-        verifyAddChatToUserInteractions(mockUser, mockChat);;
+        context.verifyAddChatToUserInteractions(mockUser, mockChat);;
     }
 
     @Test
@@ -165,17 +148,17 @@ public class UserServiceTest {
     void test_creates_chat_and_assigns_to_user(){
 
         Chatroom mockChat = new Chatroom("mockChat", id);
-        User mockUser = new User(username, id);
+        User mockUser = context.createMockUser(username, id);
 
-        mockAddChatToUserImplementation(mockUser, mockChat);
-        when(chatRepository.save(any(Chatroom.class))).thenReturn(mockChat);
+        context.mockAddChatToUserImplementation(mockUser, mockChat);
+        when(getChatRepository().save(any(Chatroom.class))).thenReturn(mockChat);
 
-        UserDTO userChats = userService.createChatWithUser(mockUser.getId(), mockChat.getName());
+        UserDTO userChats = getUserService().createChatWithUser(mockUser.getId(), mockChat.getName());
 
         assertThat(userChats.chatIds(), hasItem(mockChat.getId()));
 
-        verifyAddChatToUserInteractions(mockUser, mockChat);
-        verify(chatRepository, times(1)).save(any(Chatroom.class));
+        context.verifyAddChatToUserInteractions(mockUser, mockChat);
+        verify(getChatRepository(), times(1)).save(any(Chatroom.class));
 
     }
 
@@ -183,7 +166,6 @@ public class UserServiceTest {
     @DisplayName("UserService retrieves all chats from user")
     void test_returns_all_chats_from_user(){
 
-        User mockUser = new User(username, id);
         Long userId = mockUser.getId();
 
         List<Chatroom> mockUserChats = mockUser.getChats();
@@ -200,9 +182,9 @@ public class UserServiceTest {
         mockUserMessages.add(mockMessage1);
         mockUserMessages.add(mockMessage2);
 
-        when(userRepository.findById(id)).thenReturn(Optional.of(mockUser));
+        when(getUserRepository().findById(id)).thenReturn(Optional.of(mockUser));
 
-        UserChatsDTO userChats = userService.getUserChats(mockUser.getId());
+        UserChatsDTO userChats = getUserService().getUserChats(mockUser.getId());
         ChatroomSummaryDTO chatSummary = userChats.chatrooms().getFirst();
 
         assertThat(userChats.userId(), is(equalTo(userId)));
