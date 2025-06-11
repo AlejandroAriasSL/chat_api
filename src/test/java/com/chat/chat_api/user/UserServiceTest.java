@@ -9,6 +9,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -68,5 +69,20 @@ public class UserServiceTest {
 
         assertThat(foundUser, is(equalTo(mockUser)));
         verify(userRepository, times(1)).findById(id);
+    }
+
+    @Test
+    @DisplayName("UserService retrieves all users")
+    void test_retrieves_all_users(){
+
+        User mockUser = new User(createUserRequest.username(), id);
+        User mockUser2 = new User(createUserRequest.username(), 2L);
+
+        when(userRepository.findAll()).thenReturn(List.of(mockUser, mockUser2));
+
+        List<User> expectedUsers = List.of(mockUser, mockUser2);
+
+        assertThat(userService.getAll(), is(equalTo(expectedUsers)));
+        verify(userRepository, times(1)).findAll();
     }
 }
