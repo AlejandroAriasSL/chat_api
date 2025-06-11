@@ -15,14 +15,14 @@ import com.chat.chat_api.user.UserRepository;
 import com.chat.chat_api.user.UserService;
 import com.chat.chat_api.user.dto.CreateUserRequestDTO;
 
-public class UserServiceTestContext {
+public class UserTestContext {
     
     private UserRepository userRepository;
     private ChatroomRepository chatRepository;
     private ChatService chatService;
     private UserService userService;
     
-    public UserServiceTestContext() {
+    public UserTestContext() {
         userRepository = mock(UserRepository.class);
         chatRepository = mock(ChatroomRepository.class);
         chatService = new ChatService(chatRepository);

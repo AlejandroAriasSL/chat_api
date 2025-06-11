@@ -7,7 +7,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -28,7 +27,7 @@ import com.chat.chat_api.user.dto.CreateUserRequestDTO;
 import com.chat.chat_api.user.dto.UserChatsDTO;
 import com.chat.chat_api.user.dto.UserDTO;
 import com.chat.chat_api.user.exception.UserNotFoundException;
-import com.chat.chat_api.utils.UserServiceTestContext;
+import com.chat.chat_api.utils.UserTestContext;
 
 @DisplayName("UserService unit tests")
 public class UserServiceTest {
@@ -37,12 +36,12 @@ public class UserServiceTest {
     private final Long id = 1L;
 
     private User mockUser;
-    private UserServiceTestContext context;
+    private UserTestContext context;
     private CreateUserRequestDTO createUserRequest;
 
     @BeforeEach
     void setUp(){
-        context = new UserServiceTestContext();
+        context = new UserTestContext();
         createUserRequest = new CreateUserRequestDTO(username);
         mockUser = context.createMockUser(username, id);
     }
