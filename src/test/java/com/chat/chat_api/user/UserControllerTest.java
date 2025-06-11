@@ -7,6 +7,11 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,8 +19,11 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
 import com.chat.chat_api.chatroom.Chatroom;
-
+import com.chat.chat_api.chatroom.dto.ChatroomSummaryDTO;
+import com.chat.chat_api.message.Message;
+import com.chat.chat_api.message.dto.MessageResponseDTO;
 import com.chat.chat_api.user.dto.CreateUserRequestDTO;
+import com.chat.chat_api.user.dto.UserChatsDTO;
 import com.chat.chat_api.user.dto.UserDTO;
 import com.chat.chat_api.utils.UserTestContext;
 
@@ -80,5 +88,42 @@ public class UserControllerTest {
         assertThat(response.getStatusCode(), is(equalTo(HttpStatusCode.valueOf(200))));
         assertThat(response.getBody().userId(), is(equalTo(mockUser.getId())));
         assertThat(response.getBody().chatIds(), hasItem(mockChat.getId()));
+    }
+
+    @Test
+    @DisplayName("UserController retrieves user chats")
+    void test_controller_returns_user_chats(){
+
+        Long userId = mockUser.getId();
+
+        List<Chatroom> mockUserChats = mockUser.getChats();
+
+        Chatroom mockChat = new Chatroom("mockChat", 1L);
+        
+        List<Message> mockUserMessages = mockChat.getMessages();
+
+        mockUserChats.add(mockChat);
+
+        Message mockMessage1 = new Message(LocalDateTime.now(), "Hola", mockUser, mockChat);
+        Message mockMessage2 = new Message(LocalDateTime.now(), "¿Qué tal?", mockUser, mockChat);
+
+        mockUserMessages.add(mockMessage1);
+        mockUserMessages.add(mockMessage2);
+
+        List<MessageResponseDTO> messages = List.of(mockMessage1, mockMessage2).stream()
+                                                                               .map(MessageResponseDTO::toDTO)
+                                                                               .toList();
+
+        List<ChatroomSummaryDTO> chatroomSummary = new ArrayList<>();
+        chatroomSummary.add(new ChatroomSummaryDTO(mockChat.getId(), mockChat.getName(), messages));
+
+        UserChatsDTO userChats = new UserChatsDTO(userId, mockUser.getUsername(), chatroomSummary);
+
+        when(context.getUserService().getUserChats(userId)).thenReturn(userChats);
+
+        ResponseEntity<UserChatsDTO> response = controller.getUserChats(userId);
+
+        assertThat(response.getStatusCode(), is(equalTo(HttpStatusCode.valueOf(200))));
+        assertThat(response.getBody(), is(equalTo(userChats)));
     }
 }
