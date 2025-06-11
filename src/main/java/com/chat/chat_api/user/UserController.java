@@ -31,6 +31,11 @@ public class UserController {
         return ResponseEntity.created(location).body(UserDTO.toDto(response));
     }
 
+    @PostMapping("/{userId}/chats/create") 
+    public ResponseEntity<UserDTO> createChatWithUser(@PathVariable Long userId, @RequestBody String chatName){
+        return ResponseEntity.ok(userService.createChatWithUser(userId, chatName));
+    }
+
     @PostMapping("/{userId}/chats")
     public ResponseEntity<UserDTO> addChatToUser(@PathVariable Long userId, @RequestBody Long chatId){
         return ResponseEntity.ok(userService.addChatToUser(userId, chatId));

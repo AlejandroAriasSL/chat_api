@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 
 import com.chat.chat_api.chatroom.ChatService;
 import com.chat.chat_api.chatroom.Chatroom;
+import com.chat.chat_api.chatroom.dto.ChatDTO;
 import com.chat.chat_api.chatroom.dto.ChatroomSummaryDTO;
+import com.chat.chat_api.chatroom.dto.CreateChatRequestDTO;
 import com.chat.chat_api.message.dto.MessageResponseDTO;
 import com.chat.chat_api.user.dto.CreateUserRequestDTO;
 import com.chat.chat_api.user.dto.UserChatsDTO;
@@ -46,6 +48,13 @@ public class UserService {
             throw new UserNotFoundException(id);
         }
         repository.deleteById(id);
+    }
+
+    @Transactional
+    public UserDTO createChatWithUser(Long userId, String chatName){
+        ChatDTO chatDto = chatService.createOrUpdate(new CreateChatRequestDTO(chatName));
+
+        return addChatToUser(userId, chatDto.roomId());
     }
 
     @Transactional 
