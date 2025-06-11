@@ -15,7 +15,7 @@ import com.chat.chat_api.user.dto.UserChatsDTO;
 import com.chat.chat_api.user.dto.UserDTO;
 
 @RestController
-@RequestMapping("api/v1/users")
+@RequestMapping("${api.baseurl}/users")
 public class UserController {
 
     private final UserService userService;

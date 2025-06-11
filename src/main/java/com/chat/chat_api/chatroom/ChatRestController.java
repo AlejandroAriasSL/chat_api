@@ -13,7 +13,7 @@ import com.chat.chat_api.chatroom.dto.ChatDTO;
 import com.chat.chat_api.chatroom.dto.CreateChatRequestDTO;
 
 @RestController
-@RequestMapping("api/v1/chats")
+@RequestMapping("${api.baseurl}/chats")
 public class ChatRestController {
 
     private final ChatService chatService;
