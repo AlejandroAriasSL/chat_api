@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,14 +23,23 @@ import com.chat.chat_api.user.dto.CreateUserRequestDTO;
 public class UserServiceTest {
 
     private String username = "Usuario1";
-    private Long id = 1L;
+    private final Long id = 1L;
 
-    private UserRepository userRepository = mock(UserRepository.class);
-    private ChatroomRepository chatRepository = mock(ChatroomRepository.class);
-    private ChatService chatService = new ChatService(chatRepository);
-    private CreateUserRequestDTO createUserRequest = new CreateUserRequestDTO(username);
-    private UserService userService = new UserService(userRepository, chatService);
+    private UserRepository userRepository;
+    private ChatroomRepository chatRepository;
+    private ChatService chatService;
+    private CreateUserRequestDTO createUserRequest;
+    private UserService userService;
 
+
+    @BeforeEach
+    void setUp(){
+        userRepository = mock(UserRepository.class);
+        chatRepository = mock(ChatroomRepository.class);
+        chatService =  new ChatService(chatRepository);
+        createUserRequest = new CreateUserRequestDTO(username);
+        userService = new UserService(userRepository, chatService);
+    }
 
     @Test
     @DisplayName("UserService succesfully creates user")
