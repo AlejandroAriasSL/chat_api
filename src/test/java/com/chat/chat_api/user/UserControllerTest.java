@@ -7,8 +7,6 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,8 +14,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
 import com.chat.chat_api.chatroom.Chatroom;
-import com.chat.chat_api.chatroom.dto.ChatDTO;
-import com.chat.chat_api.chatroom.dto.CreateChatRequestDTO;
+
 import com.chat.chat_api.user.dto.CreateUserRequestDTO;
 import com.chat.chat_api.user.dto.UserDTO;
 import com.chat.chat_api.utils.UserTestContext;
@@ -27,23 +24,21 @@ public class UserControllerTest {
 
     private UserTestContext context;
     private UserController controller;
+    private User mockUser;
 
     @BeforeEach
     void setUp(){
         context = new UserTestContext();
         context.setMocked(mock(UserService.class));
         controller = new UserController(context.getUserService());
+        mockUser = context.createMockUser("Usuario1", 1L);
     }
     
     @Test
     @DisplayName("UserController creates user")
     void test_controller_returns_userDTO(){
 
-        String username = "Usuario1";
-        Long id = 1L;
-
-        CreateUserRequestDTO createUserRequest = context.createUserRequest(username);
-        User mockUser = context.createMockUser(username, id);
+        CreateUserRequestDTO createUserRequest = context.createUserRequest("Usuario1");
 
         when(context.getUserService().createOrUpdate(createUserRequest)).thenReturn(mockUser);
 
@@ -54,16 +49,13 @@ public class UserControllerTest {
     @Test
     @DisplayName("UserController creates chat with user")
     void test_controller_creates_chat_with_user(){
-
-        Long userId = 1L; 
-        User mockUser = context.createMockUser("Usuario1", userId);
-        
+   
         String chatName = "mockChat";
         Chatroom mockChat = new Chatroom(chatName, 1L);
 
         mockUser.getChats().add(mockChat);
 
-        when(context.getUserService().createChatWithUser(userId, chatName)).thenReturn(UserDTO.toDto(mockUser));
+        when(context.getUserService().createChatWithUser(mockUser.getId(), chatName)).thenReturn(UserDTO.toDto(mockUser));
         
         ResponseEntity<UserDTO> response = controller.createChatWithUser(mockUser.getId(), mockChat.getName());
 
