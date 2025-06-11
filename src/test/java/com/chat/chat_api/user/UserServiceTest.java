@@ -3,6 +3,7 @@ package com.chat.chat_api.user;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import com.chat.chat_api.chatroom.ChatService;
 import com.chat.chat_api.chatroom.ChatroomRepository;
 import com.chat.chat_api.user.dto.CreateUserRequestDTO;
+import com.chat.chat_api.user.exception.UserNotFoundException;
 
 @DisplayName("UserService unit tests")
 public class UserServiceTest {
@@ -95,5 +97,12 @@ public class UserServiceTest {
         userService.deleteById(id);
 
         verify(userRepository, times(1)).deleteById(id);
+    }
+
+    @Test
+    @DisplayName("UserService throws exception when player not found before deleting")
+    void test_throws_exception_if_doesnt_exist_before_deletion(){
+
+        assertThrows(UserNotFoundException.class, () -> userService.deleteById(id));
     }
 }
