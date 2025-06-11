@@ -63,4 +63,22 @@ public class UserControllerTest {
         assertThat(response.getBody().userId(), is(equalTo(mockUser.getId())));
         assertThat(response.getBody().chatIds(), hasItem(mockChat.getId()));
     }
+
+    @Test
+    @DisplayName("UserController adds chat to user")
+    void test_controller_adds_chat_to_user(){
+
+        String chatName = "mockChat";
+        Chatroom mockChat = new Chatroom(chatName, 1L);
+
+        mockUser.getChats().add(mockChat);
+
+        when(context.getUserService().addChatToUser(mockUser.getId(), mockChat.getId())).thenReturn(UserDTO.toDto(mockUser));
+        
+        ResponseEntity<UserDTO> response = controller.addChatToUser(mockUser.getId(), mockChat.getId());
+
+        assertThat(response.getStatusCode(), is(equalTo(HttpStatusCode.valueOf(200))));
+        assertThat(response.getBody().userId(), is(equalTo(mockUser.getId())));
+        assertThat(response.getBody().chatIds(), hasItem(mockChat.getId()));
+    }
 }
