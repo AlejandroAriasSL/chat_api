@@ -5,14 +5,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.chat.chat_api.chatroom.exception.ChatNotFoundException;
 import com.chat.chat_api.handler.dto.ErrorResponse;
 import com.chat.chat_api.user.exception.UserNotFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
     
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException exception){
+    @ExceptionHandler({UserNotFoundException.class, ChatNotFoundException.class})
+    public ResponseEntity<ErrorResponse> handleUserNotFound(RuntimeException exception){
         ErrorResponse errorResponse = new ErrorResponse(
             HttpStatus.NOT_FOUND.value(),
             HttpStatus.NOT_FOUND.getReasonPhrase(),
