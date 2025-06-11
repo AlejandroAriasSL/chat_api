@@ -12,6 +12,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +23,10 @@ import org.junit.jupiter.api.Test;
 import com.chat.chat_api.chatroom.ChatService;
 import com.chat.chat_api.chatroom.Chatroom;
 import com.chat.chat_api.chatroom.ChatroomRepository;
+import com.chat.chat_api.chatroom.dto.ChatroomSummaryDTO;
+import com.chat.chat_api.message.Message;
 import com.chat.chat_api.user.dto.CreateUserRequestDTO;
+import com.chat.chat_api.user.dto.UserChatsDTO;
 import com.chat.chat_api.user.dto.UserDTO;
 import com.chat.chat_api.user.exception.UserNotFoundException;
 
@@ -173,5 +177,38 @@ public class UserServiceTest {
         verifyAddChatToUserInteractions(mockUser, mockChat);
         verify(chatRepository, times(1)).save(any(Chatroom.class));
 
+    }
+
+    @Test
+    @DisplayName("UserService retrieves all chats from user")
+    void test_returns_all_chats_from_user(){
+
+        User mockUser = new User(username, id);
+        Long userId = mockUser.getId();
+
+        List<Chatroom> mockUserChats = mockUser.getChats();
+
+        Chatroom mockChat = new Chatroom("mockChat", id);
+        
+        List<Message> mockUserMessages = mockChat.getMessages();
+
+        mockUserChats.add(mockChat);
+
+        Message mockMessage1 = new Message(LocalDateTime.now(), "Hola", mockUser, mockChat);
+        Message mockMessage2 = new Message(LocalDateTime.now(), "¿Qué tal?", mockUser, mockChat);
+
+        mockUserMessages.add(mockMessage1);
+        mockUserMessages.add(mockMessage2);
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(mockUser));
+
+        UserChatsDTO userChats = userService.getUserChats(mockUser.getId());
+        ChatroomSummaryDTO chatSummary = userChats.chatrooms().getFirst();
+
+        assertThat(userChats.userId(), is(equalTo(userId)));
+        assertThat(userChats.username(), is(equalTo(mockUser.getUsername())));
+        assertThat(userChats.chatrooms(), hasSize(1));
+
+        assertThat(chatSummary.messages(), hasSize(2));
     }
 }
