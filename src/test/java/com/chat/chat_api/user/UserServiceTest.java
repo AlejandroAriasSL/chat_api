@@ -2,6 +2,7 @@ package com.chat.chat_api.user;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -18,8 +19,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.chat.chat_api.chatroom.ChatService;
+import com.chat.chat_api.chatroom.Chatroom;
 import com.chat.chat_api.chatroom.ChatroomRepository;
 import com.chat.chat_api.user.dto.CreateUserRequestDTO;
+import com.chat.chat_api.user.dto.UserDTO;
 import com.chat.chat_api.user.exception.UserNotFoundException;
 
 @DisplayName("UserService unit tests")
@@ -104,5 +107,25 @@ public class UserServiceTest {
     void test_throws_exception_if_doesnt_exist_before_deletion(){
 
         assertThrows(UserNotFoundException.class, () -> userService.deleteById(id));
+    }
+
+    @Test
+    @DisplayName("UserService adds chat to user")
+    void test_adds_chat_to_user(){
+
+        Chatroom mockChat = new Chatroom("mockChat", id);
+        User mockUser = new User(username, id);
+        
+        when(userRepository.findById(id)).thenReturn(Optional.of(mockUser));
+        when(chatRepository.findById(id)).thenReturn(Optional.of(mockChat));
+        when(userRepository.save(mockUser)).thenReturn(mockUser);
+
+        UserDTO userChats = userService.addChatToUser(id, 1L);
+
+        assertThat(userChats.chatIds(), hasItem(mockChat.getId()));
+        
+        verify(userRepository, times(1)).findById(id);
+        verify(userRepository, times(1)).save(mockUser);
+        verify(chatRepository, times(1)).findById(id);
     }
 }
