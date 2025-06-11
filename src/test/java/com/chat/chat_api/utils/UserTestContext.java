@@ -5,6 +5,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Field;
 import java.util.Optional;
 
 import com.chat.chat_api.chatroom.ChatService;
@@ -68,5 +69,23 @@ public class UserTestContext {
     
     public User createMockUser(String username, Long id){
         return new User(username, id);
+    }
+
+    public void setMocked(Object mock){
+        Field[] fields = this.getClass().getDeclaredFields();
+
+        for (Field field : fields){
+            if (field.getType().equals(mock.getClass())){
+                field.setAccessible(true);
+                try {
+                    field.set(this, mock);
+                    return;
+                } catch (IllegalAccessException e){
+                    throw new RuntimeException("Unable to assign mock to field '%s':'%s'".formatted(field.getName(), e));
+                }
+            }
+        }
+
+        throw new IllegalArgumentException("No field of type '%s' found to assign mock".formatted(mock.getClass()));
     }
 }
