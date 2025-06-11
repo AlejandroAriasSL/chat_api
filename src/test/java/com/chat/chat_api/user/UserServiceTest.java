@@ -9,6 +9,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,18 +22,19 @@ import com.chat.chat_api.user.dto.CreateUserRequestDTO;
 public class UserServiceTest {
 
     private String username = "Usuario1";
+    private Long id = 1L;
 
     private UserRepository userRepository = mock(UserRepository.class);
     private ChatroomRepository chatRepository = mock(ChatroomRepository.class);
     private ChatService chatService = new ChatService(chatRepository);
     private CreateUserRequestDTO createUserRequest = new CreateUserRequestDTO(username);
+    private UserService userService = new UserService(userRepository, chatService);
 
 
     @Test
     @DisplayName("UserService succesfully creates user")
     void test_user_is_created(){
        
-       UserService userService = new UserService(userRepository, chatService);
        User mockUser = new User(createUserRequest.username());
 
        when(userRepository.save(any(User.class))).thenReturn(mockUser);
@@ -40,5 +43,20 @@ public class UserServiceTest {
        
        assertThat(savedUser, is(equalTo(mockUser)));
        verify(userRepository, times(1)).save(any(User.class));
+    }
+
+
+    @Test
+    @DisplayName("UserService returns user by id when found")
+    void test_user_found_by_id(){
+
+        User mockUser = new User(createUserRequest.username(), id);
+
+        when(userRepository.findById(mockUser.getId())).thenReturn(Optional.of(mockUser));
+        
+        User foundUser = userService.getById(id);
+
+        assertThat(foundUser, is(equalTo(mockUser)));
+        verify(userRepository, times(1)).findById(id);
     }
 }
