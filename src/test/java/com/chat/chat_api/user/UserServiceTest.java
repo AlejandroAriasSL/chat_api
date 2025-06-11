@@ -133,7 +133,7 @@ public class UserServiceTest {
         UserDTO userChats = userService.addChatToUser(id, 1L);
 
         assertThat(userChats.chatIds(), hasItem(mockChat.getId()));
-        
+
         verifyAddChatToUserInteractions(mockUser, mockChat);
     }
 
@@ -154,5 +154,24 @@ public class UserServiceTest {
         assertThat(userChats.chatIds(), hasSize(1));
 
         verifyAddChatToUserInteractions(mockUser, mockChat);;
+    }
+
+    @Test
+    @DisplayName("UserService creates chat and assigns it to user")
+    void test_creates_chat_and_assigns_to_user(){
+
+        Chatroom mockChat = new Chatroom("mockChat", id);
+        User mockUser = new User(username, id);
+
+        mockAddChatToUserImplementation(mockUser, mockChat);
+        when(chatRepository.save(any(Chatroom.class))).thenReturn(mockChat);
+
+        UserDTO userChats = userService.createChatWithUser(mockUser.getId(), mockChat.getName());
+
+        assertThat(userChats.chatIds(), hasItem(mockChat.getId()));
+
+        verifyAddChatToUserInteractions(mockUser, mockChat);
+        verify(chatRepository, times(1)).save(any(Chatroom.class));
+
     }
 }
