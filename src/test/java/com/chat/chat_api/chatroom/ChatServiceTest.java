@@ -2,11 +2,13 @@ package com.chat.chat_api.chatroom;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -50,5 +52,19 @@ public class ChatServiceTest {
         chatService.createOrUpdate(createChatRequestDTO);
         assertThat(chatService.getById(savedChat.getId()), is(equalTo(savedChat)));
 
+    }
+
+    @Test
+    @DisplayName("ChatService returns all the saved chats")
+    void test_ChatService_returns_all_chats(){
+
+        String chatName = "Chat1";
+        Chatroom savedChat1 = new Chatroom(chatName, 1L);
+        Chatroom savedChat2 = new Chatroom(chatName, 2L);
+
+        when(repository.findAll()).thenReturn(List.of(savedChat1, savedChat2));
+
+        List<ChatDTO> result = chatService.getAll();        
+        assertThat(result, hasSize(2));
     }
 }
