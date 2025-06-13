@@ -35,4 +35,18 @@ public class ChatroomTest {
         assertThat(chat.getId(), is(equalTo(id)));
         assertThat(chat.getName(), is(equalTo(name)));
     }
+
+    @Test
+    @DisplayName("Chatroom can change name after initialization")
+    void tets_can_change_name_after_initialization(){
+
+        String initialName = "Chat1";
+        String modifiedName = "ChatOriginal";
+
+        Chatroom chat =  new Chatroom(initialName);
+        assertThat(chat.getName(), is(equalTo(initialName)));
+
+        chat.setName(modifiedName);
+        assertThat(chat.getName(), is(equalTo(modifiedName)));
+    }
 }
