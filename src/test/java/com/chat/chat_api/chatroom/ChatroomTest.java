@@ -6,9 +6,12 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.chat.chat_api.message.Message;
 import com.chat.chat_api.user.User;
 
 @DisplayName("Chatroom unit tests")
@@ -66,5 +69,23 @@ public class ChatroomTest {
 
         chat.addUser(user);
         assertThat(chat.getChatUsers(), hasSize(1));
+    }
+
+    @Test
+    @DisplayName("Chatroom can add Messages after initialization")
+    void test_can_add_messages_after_initialization(){
+
+        String chatName = "Chat1";
+        Chatroom chat = new Chatroom(chatName);
+        assertThat(chat.getMessages(), hasSize(0));
+
+        String username = "Usuario1";
+        User user = new User(username);
+
+        String messageContent = "Hola"; 
+        Message message = new Message(LocalDateTime.now(),messageContent, user, chat);
+        chat.addMessages(message);
+
+        assertThat(chat.getMessages(), hasSize(1));
     }
 }
