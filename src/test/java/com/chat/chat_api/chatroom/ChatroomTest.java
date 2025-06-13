@@ -1,0 +1,91 @@
+package com.chat.chat_api.chatroom;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import java.time.LocalDateTime;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import com.chat.chat_api.message.Message;
+import com.chat.chat_api.user.User;
+
+@DisplayName("Chatroom unit tests")
+public class ChatroomTest {
+    
+    @Test
+    @DisplayName("Chatroom constructor with no parameters")
+    void test_chatroom_constructor_with_no_parameters(){
+
+        Chatroom chat = new Chatroom();
+
+        assertNull(chat.getId());
+        assertNull(chat.getName());
+        assertThat(chat.getMessages().isEmpty(), is(equalTo(true)));
+        assertThat(chat.getChatUsers().isEmpty(), is(equalTo(true)));
+    }
+
+    @Test
+    @DisplayName("Chatroom has correct attributes after initialization")
+    void test_chat_has_correct_attributes_after_initialization(){
+
+        String name = "Chat1";
+        Long id = 1L;
+
+        Chatroom chat = new Chatroom(name, id);
+
+        assertThat(chat.getId(), is(equalTo(id)));
+        assertThat(chat.getName(), is(equalTo(name)));
+    }
+
+    @Test
+    @DisplayName("Chatroom can change name after initialization")
+    void test_can_change_name_after_initialization(){
+
+        String initialName = "Chat1";
+        String modifiedName = "ChatOriginal";
+
+        Chatroom chat =  new Chatroom(initialName);
+        assertThat(chat.getName(), is(equalTo(initialName)));
+
+        chat.setName(modifiedName);
+        assertThat(chat.getName(), is(equalTo(modifiedName)));
+    }
+
+    @Test
+    @DisplayName("Chatroom can add users after initialziation")
+    void test_can_add_users_after_initialization(){
+
+        String chatName = "Chat1";
+        Chatroom chat = new Chatroom(chatName);
+        assertThat(chat.getChatUsers(), hasSize(0));
+
+        String username = "Usuario1";
+        User user = new User(username);
+
+        chat.addUser(user);
+        assertThat(chat.getChatUsers(), hasSize(1));
+    }
+
+    @Test
+    @DisplayName("Chatroom can add Messages after initialization")
+    void test_can_add_messages_after_initialization(){
+
+        String chatName = "Chat1";
+        Chatroom chat = new Chatroom(chatName);
+        assertThat(chat.getMessages(), hasSize(0));
+
+        String username = "Usuario1";
+        User user = new User(username);
+
+        String messageContent = "Hola"; 
+        Message message = new Message(LocalDateTime.now(),messageContent, user, chat);
+        chat.addMessages(message);
+
+        assertThat(chat.getMessages(), hasSize(1));
+    }
+}
