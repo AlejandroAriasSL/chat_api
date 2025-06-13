@@ -31,4 +31,23 @@ public class MessageTest {
         assertThat(message.getSender(), is(equalTo(sender)));
         assertThat(message.getChat(), is(equalTo(chat)));
     }
+
+    @Test
+    @DisplayName("Message entity can modify content field after initialization")
+    void test_message_can_modify_its_content(){
+        
+        String content = "Hola";
+        LocalDateTime timestamp = LocalDateTime.now();
+        User sender = new User("User1");
+        Chatroom chat = new Chatroom("Chat1");
+
+        Message message = new Message(timestamp, content, sender, chat);
+
+        assertThat(message.getContent(), is(equalTo(content)));
+
+        String newContent = "Adios";
+        message.setContent(newContent);
+        
+        assertThat(message.getContent(), is(equalTo(newContent)));
+    }
 }
