@@ -90,4 +90,13 @@ public class ChatServiceTest {
         assertThrows(ChatNotFoundException.class, () -> chatService.getById(1L));
 
     }
+
+    @Test
+    @DisplayName("ChatService throws ChatNotFoundException when deleting and chat doesnt exist")
+    void test_deleteById_throws_exceptin_when_chat_doesnt_exist(){
+
+        when(repository.existsById(1L)).thenReturn(false);
+
+        assertThrows(ChatNotFoundException.class, () -> chatService.deleteById(1L));
+    }
 }
