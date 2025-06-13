@@ -4,8 +4,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -16,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import com.chat.chat_api.chatroom.dto.ChatDTO;
 import com.chat.chat_api.chatroom.dto.CreateChatRequestDTO;
+import com.chat.chat_api.chatroom.exception.ChatNotFoundException;
 
 @DisplayName("ChatService unit tests")
 public class ChatServiceTest {
@@ -66,5 +69,25 @@ public class ChatServiceTest {
 
         List<ChatDTO> result = chatService.getAll();        
         assertThat(result, hasSize(2));
+    }
+
+    @Test
+    @DisplayName("ChatService deletes chatById")
+    void test_ChatService_deletes_chat_by_id(){
+
+        String chatName = "Chat1";
+        Chatroom savedChat = new Chatroom(chatName, 1L);
+
+        when(repository.findById(savedChat.getId())).thenReturn(Optional.of(savedChat));
+        when(repository.existsById(1L)).thenReturn(true);
+
+        Chatroom queriedChat = chatService.getById(1L);
+        assertThat(queriedChat, is(equalTo(savedChat)));
+
+        chatService.deleteById(1L);
+        reset(repository);
+
+        assertThrows(ChatNotFoundException.class, () -> chatService.getById(1L));
+
     }
 }
