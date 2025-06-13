@@ -3,9 +3,12 @@ package com.chat.chat_api.chatroom;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,5 +39,23 @@ public class ChatControllerTest {
        assertThat(response.getStatusCode().is2xxSuccessful(), is(equalTo(true)));
        assertThat(response.getBody(), is(equalTo(chatDTO)));
 
+    }
+
+    @Test
+    @DisplayName("ChatController returns all Chats")
+    void test_chatController_returns_all_chats(){
+
+        String chatName = "Chat1";
+        Long id = 1L;
+
+        Chatroom chat1 = new Chatroom(chatName, id);
+        Chatroom chat2 = new Chatroom(chatName, id);
+        
+        ChatDTO chat1Dto = ChatDTO.toDTO(chat1);
+        ChatDTO chat2Dto = ChatDTO.toDTO(chat2);
+        
+        when(chatService.getAll()).thenReturn(List.of(chat1Dto, chat2Dto));
+
+        assertThat(controller.getAllChats().getBody(), hasItems(chat1Dto, chat2Dto));
     }
 }
