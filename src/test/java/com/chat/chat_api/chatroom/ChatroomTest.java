@@ -2,11 +2,14 @@ package com.chat.chat_api.chatroom;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import com.chat.chat_api.user.User;
 
 @DisplayName("Chatroom unit tests")
 public class ChatroomTest {
@@ -38,7 +41,7 @@ public class ChatroomTest {
 
     @Test
     @DisplayName("Chatroom can change name after initialization")
-    void tets_can_change_name_after_initialization(){
+    void test_can_change_name_after_initialization(){
 
         String initialName = "Chat1";
         String modifiedName = "ChatOriginal";
@@ -48,5 +51,20 @@ public class ChatroomTest {
 
         chat.setName(modifiedName);
         assertThat(chat.getName(), is(equalTo(modifiedName)));
+    }
+
+    @Test
+    @DisplayName("Chatroom can add users after initialziation")
+    void test_can_add_users_after_initialization(){
+
+        String chatName = "Chat1";
+        Chatroom chat = new Chatroom(chatName);
+        assertThat(chat.getChatUsers(), hasSize(0));
+
+        String username = "Usuario1";
+        User user = new User(username);
+
+        chat.addUser(user);
+        assertThat(chat.getChatUsers(), hasSize(1));
     }
 }
