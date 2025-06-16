@@ -30,7 +30,7 @@ public class UserService {
 
     @Transactional
     public User createOrUpdate(CreateUserRequestDTO request){
-       return repository.save(new User(request.username())); 
+       return repository.save(new User(request.username(), request.password())); 
     }
 
     public User getById(Long id) throws UserNotFoundException {
