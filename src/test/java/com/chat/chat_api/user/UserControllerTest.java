@@ -45,7 +45,7 @@ public class UserControllerTest {
     @DisplayName("UserController creates user")
     void test_controller_returns_userDTO(){
 
-        CreateUserRequestDTO createUserRequest = context.createUserRequest("Usuario1");
+        CreateUserRequestDTO createUserRequest = context.createUserRequest("Usuario1", "tespass");
 
         when(context.getUserService().createOrUpdate(createUserRequest)).thenReturn(mockUser);
 

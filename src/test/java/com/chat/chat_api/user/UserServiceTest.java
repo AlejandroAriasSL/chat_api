@@ -42,7 +42,7 @@ public class UserServiceTest {
     @BeforeEach
     void setUp(){
         context = new UserTestContext();
-        createUserRequest = new CreateUserRequestDTO(username);
+        createUserRequest = new CreateUserRequestDTO(username, "testpass");
         mockUser = context.createMockUser(username, id);
     }
 

@@ -59,8 +59,8 @@ public class UserTestContext {
         return userService;
     }
 
-    public CreateUserRequestDTO createUserRequest(String username){
-        return new CreateUserRequestDTO(username);
+    public CreateUserRequestDTO createUserRequest(String username, String password){
+        return new CreateUserRequestDTO(username, password);
     }
 
     public User createMockUser(String username){
