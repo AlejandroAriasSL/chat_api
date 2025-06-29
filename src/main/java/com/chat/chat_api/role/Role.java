@@ -16,15 +16,15 @@ public class Role {
     @Column(name = "role_id", nullable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "role_name", nullable = false)
+    private String roleName;
 
     public Role(){}
 
     public Role(String name){
-        this.name = name;
+        this.roleName = name;
     }
 
     public Long getId() { return id; }
-    public String getName() { return name; }
+    public String getName() { return roleName; }
 }

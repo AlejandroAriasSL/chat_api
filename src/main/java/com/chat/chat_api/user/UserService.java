@@ -29,8 +29,8 @@ public class UserService {
     }
 
     @Transactional
-    public User createOrUpdate(CreateUserRequestDTO request){
-       return repository.save(new User(request.username(), request.password())); 
+    public User createOrUpdate(User user){
+       return repository.save(user); 
     }
 
     public User getById(Long id) throws UserNotFoundException {

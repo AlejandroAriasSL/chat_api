@@ -13,22 +13,25 @@ import org.springframework.web.bind.annotation.RestController;
 import com.chat.chat_api.user.dto.CreateUserRequestDTO;
 import com.chat.chat_api.user.dto.UserChatsDTO;
 import com.chat.chat_api.user.dto.UserDTO;
+import com.chat.chat_api.user.usecase.RegisterUseCase;
 
 @RestController
 @RequestMapping("${api.baseurl}/users")
 public class UserController {
 
     private final UserService userService;
+    private final RegisterUseCase register;
 
-    public UserController(final UserService userService){
+    public UserController(final UserService userService, RegisterUseCase register){
         this.userService = userService;
+        this.register = register;
     }
 
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody CreateUserRequestDTO request){
-        User response = userService.createOrUpdate(request);
-        URI location = URI.create("api/v1/users" + "/" + response.getId());
-        return ResponseEntity.created(location).body(UserDTO.toDto(response));
+        UserDTO response = register.execute(request);
+        URI location = URI.create("api/v1/users" + "/" + response.userId());
+        return ResponseEntity.created(location).body(response);
     }
 
     @PostMapping("/{userId}/chats/create") 
