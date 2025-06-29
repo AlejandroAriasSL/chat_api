@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -14,6 +15,10 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
@@ -24,30 +29,37 @@ import com.chat.chat_api.message.dto.MessageResponseDTO;
 import com.chat.chat_api.user.dto.CreateUserRequestDTO;
 import com.chat.chat_api.user.dto.UserChatsDTO;
 import com.chat.chat_api.user.dto.UserDTO;
+import com.chat.chat_api.user.usecase.RegisterUseCase;
 import com.chat.chat_api.utils.UserTestContext;
 
+@ExtendWith(MockitoExtension.class)
 @DisplayName("UserController unit tests")
 public class UserControllerTest {
 
-    private UserTestContext context;
+    
+    @Mock
+    private UserService userService;
+
+    @Mock
+    private RegisterUseCase register;
+
+    @InjectMocks
     private UserController controller;
+    
     private User mockUser;
 
     @BeforeEach
     void setUp(){
-        context = new UserTestContext();
-        context.setMocked(mock(UserService.class));
-        controller = new UserController(context.getUserService());
-        mockUser = context.createMockUser("Usuario1", 1L);
+        mockUser = new User("Usuario1", 1L);
     }
     
     @Test
     @DisplayName("UserController creates user")
     void test_controller_returns_userDTO(){
 
-        CreateUserRequestDTO createUserRequest = context.createUserRequest("Usuario1", "tespass");
+        CreateUserRequestDTO createUserRequest = new CreateUserRequestDTO("Usuario1", "tespass");
 
-        when(context.getUserService().createOrUpdate(createUserRequest)).thenReturn(mockUser);
+        when(register.execute(any(CreateUserRequestDTO.class))).thenReturn(UserDTO.toDto(mockUser));
 
         ResponseEntity<UserDTO> response = controller.createUser(createUserRequest);
         assertThat(response.getStatusCode(), is(equalTo(HttpStatusCode.valueOf(201))));
@@ -62,7 +74,7 @@ public class UserControllerTest {
 
         mockUser.getChats().add(mockChat);
 
-        when(context.getUserService().createChatWithUser(mockUser.getId(), chatName)).thenReturn(UserDTO.toDto(mockUser));
+        when(userService.createChatWithUser(mockUser.getId(), chatName)).thenReturn(UserDTO.toDto(mockUser));
         
         ResponseEntity<UserDTO> response = controller.createChatWithUser(mockUser.getId(), mockChat.getName());
 
@@ -80,7 +92,7 @@ public class UserControllerTest {
 
         mockUser.getChats().add(mockChat);
 
-        when(context.getUserService().addChatToUser(mockUser.getId(), mockChat.getId())).thenReturn(UserDTO.toDto(mockUser));
+        when(userService.addChatToUser(mockUser.getId(), mockChat.getId())).thenReturn(UserDTO.toDto(mockUser));
         
         ResponseEntity<UserDTO> response = controller.addChatToUser(mockUser.getId(), mockChat.getId());
 
@@ -118,7 +130,7 @@ public class UserControllerTest {
 
         UserChatsDTO userChats = new UserChatsDTO(userId, mockUser.getUsername(), chatroomSummary);
 
-        when(context.getUserService().getUserChats(userId)).thenReturn(userChats);
+        when(userService.getUserChats(userId)).thenReturn(userChats);
 
         ResponseEntity<UserChatsDTO> response = controller.getUserChats(userId);
 

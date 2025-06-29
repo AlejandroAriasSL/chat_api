@@ -58,7 +58,7 @@ public class UserServiceTest {
 
        when(getUserRepository().save(any(User.class))).thenReturn(mockUser);
 
-       User savedUser = getUserService().createOrUpdate(createUserRequest);
+       User savedUser = getUserService().createOrUpdate(mockUser);
        
        assertThat(savedUser, is(equalTo(mockUser)));
        verify(getUserRepository(), times(1)).save(any(User.class));
