@@ -20,16 +20,16 @@ import com.chat.chat_api.user.usecase.RegisterUseCase;
 public class UserController {
 
     private final UserService userService;
-    private final RegisterUseCase register;
+    private final UserFacade userFacade;
 
-    public UserController(final UserService userService, RegisterUseCase register){
+    public UserController(final UserService userService, UserFacade userFacade){
         this.userService = userService;
-        this.register = register;
+        this.userFacade = userFacade;
     }
 
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody CreateUserRequestDTO request){
-        UserDTO response = register.execute(request);
+        UserDTO response = userFacade.execute(request);
         URI location = URI.create("api/v1/users" + "/" + response.userId());
         return ResponseEntity.created(location).body(response);
     }

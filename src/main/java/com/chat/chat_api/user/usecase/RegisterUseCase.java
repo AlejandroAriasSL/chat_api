@@ -6,14 +6,17 @@ import java.util.Base64.Decoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.chat.chat_api.annotation.UseCaseType;
 import com.chat.chat_api.role.RoleService;
 import com.chat.chat_api.user.User;
 import com.chat.chat_api.user.UserService;
+import com.chat.chat_api.user.UserUseCase;
 import com.chat.chat_api.user.dto.CreateUserRequestDTO;
 import com.chat.chat_api.user.dto.UserDTO;
 
 @Component
-public class RegisterUseCase {
+@UseCaseType(CreateUserRequestDTO.class)
+public class RegisterUseCase implements UserUseCase<CreateUserRequestDTO, UserDTO> {
 
     private final UserService userService;
     private final RoleService roleService;
