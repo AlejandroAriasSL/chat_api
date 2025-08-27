@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.chat.chat_api.chatroom.Chatroom;
+import com.chat.chat_api.role.Role;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,10 +23,14 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id", nullable = false)
     private Long id;
 
     @Column(name = "username", nullable = false, unique = true)
     private String username;
+
+    @Column(name = "password", nullable = false)
+    private String password;
     
     @ManyToMany
     @JoinTable(
@@ -34,10 +40,19 @@ public class User {
     )
     private List<Chatroom> chats = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+
     public User(){}
 
     public User(String username){
         this.username = username; 
+    }
+
+    public User(String username, String password){
+        this.username = username;
+        this.password = password;
     }
 
     public User(String username, Long id){
@@ -48,4 +63,8 @@ public class User {
     public Long getId() { return id; }
     public String getUsername(){ return username; }
     public List<Chatroom> getChats(){ return chats; }
+    public String getPassword() { return password; }
+    public Role getRole() { return role; }
+
+    public void setRole(Role role){ this.role = role; }
 }

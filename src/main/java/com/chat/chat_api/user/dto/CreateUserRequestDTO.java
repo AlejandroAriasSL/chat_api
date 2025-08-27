@@ -1,5 +1,5 @@
 package com.chat.chat_api.user.dto;
 
-public record CreateUserRequestDTO(String username) {
+public record CreateUserRequestDTO(String username, String password) implements UserRecord {
     
 }

@@ -1,5 +1,7 @@
 package com.chat.chat_api.message;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 
 import com.chat.chat_api.chatroom.ChatService;
@@ -8,6 +10,8 @@ import com.chat.chat_api.message.dto.MessageDTO;
 import com.chat.chat_api.message.dto.MessageResponseDTO;
 import com.chat.chat_api.user.User;
 import com.chat.chat_api.user.UserService;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class MessageService {
@@ -26,11 +30,12 @@ public class MessageService {
         this.userService = userService;
     }
 
-    public MessageResponseDTO createOrUpdate(Long chatId, MessageDTO messageDto){
+    @Transactional
+    public MessageResponseDTO createOrUpdate(Long chatId, MessageDTO messageDto, String username) {
         Chatroom chat = chatService.getById(chatId);
-        User user = userService.getById(messageDto.senderId());
+        User user = userService.findByUsername(username).orElseThrow();
 
-        Message message = new Message(messageDto.timestamp(), messageDto.content(), user, chat);
+        Message message = new Message(LocalDateTime.now(), messageDto.content(), user, chat);
         repository.save(message);
 
         return MessageResponseDTO.toDTO(message);

@@ -1,6 +1,7 @@
 package com.chat.chat_api.user;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -10,7 +11,6 @@ import com.chat.chat_api.chatroom.dto.ChatDTO;
 import com.chat.chat_api.chatroom.dto.ChatroomSummaryDTO;
 import com.chat.chat_api.chatroom.dto.CreateChatRequestDTO;
 import com.chat.chat_api.message.dto.MessageResponseDTO;
-import com.chat.chat_api.user.dto.CreateUserRequestDTO;
 import com.chat.chat_api.user.dto.UserChatsDTO;
 import com.chat.chat_api.user.dto.UserDTO;
 import com.chat.chat_api.user.exception.UserNotFoundException;
@@ -28,9 +28,13 @@ public class UserService {
         this.chatService = chatService;
     }
 
+    public Optional<User> findByUsername(String username) {
+        return repository.findByUsername(username);
+    }
+
     @Transactional
-    public User createOrUpdate(CreateUserRequestDTO request){
-       return repository.save(new User(request.username())); 
+    public User createOrUpdate(User user){
+       return repository.save(user); 
     }
 
     public User getById(Long id) throws UserNotFoundException {
