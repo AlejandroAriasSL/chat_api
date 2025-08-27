@@ -48,4 +48,9 @@ public class UserUseCaseRegistry {
 
         return (Class<? extends UserRecord>) value;
     } 
+
+    public Map<Class<? extends UserRecord>, UserUseCase<?, ?>> getRegistry() {
+        return registry;
+    }
+
 }

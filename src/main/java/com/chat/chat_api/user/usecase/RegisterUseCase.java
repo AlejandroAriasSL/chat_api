@@ -3,7 +3,7 @@ package com.chat.chat_api.user.usecase;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.chat.chat_api.annotation.UseCaseType;
@@ -20,10 +20,12 @@ public class RegisterUseCase implements UserUseCase<CreateUserRequestDTO, UserDT
 
     private final UserService userService;
     private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
 
-    public RegisterUseCase(UserService userService, RoleService roleService){
+    public RegisterUseCase(UserService userService, RoleService roleService, PasswordEncoder passwordEncoder){
         this.userService = userService;
         this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserDTO execute(CreateUserRequestDTO request){
@@ -32,8 +34,7 @@ public class RegisterUseCase implements UserUseCase<CreateUserRequestDTO, UserDT
         byte[] decodedBytes = decoder.decode(request.password());
         String passwordDecoded = new String(decodedBytes);
 
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String passwordEnconded = encoder.encode(passwordDecoded);
+        String passwordEnconded = passwordEncoder.encode(passwordDecoded);
 
         User newUser = new User(request.username(), passwordEnconded);
         newUser.setRole(roleService.getDefaultRole());
