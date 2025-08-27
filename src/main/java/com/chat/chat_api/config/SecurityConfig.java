@@ -10,12 +10,18 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.chat.chat_api.security.JwtAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig{
 
-    public SecurityConfig(){
-    }
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter){
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }   
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, @Value("${api.baseurl}") String baseUrl) throws Exception {
@@ -26,8 +32,9 @@ public class SecurityConfig{
                 .anyRequest().authenticated()
             )
             .csrf(csrf -> csrf.disable()) 
-            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin())
-);
+            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
+        
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

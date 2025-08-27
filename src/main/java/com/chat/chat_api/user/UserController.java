@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.chat.chat_api.user.dto.CreateUserRequestDTO;
 import com.chat.chat_api.user.dto.LoginRequestDTO;
+import com.chat.chat_api.user.dto.LoginResponseDTO;
 import com.chat.chat_api.user.dto.UserChatsDTO;
 import com.chat.chat_api.user.dto.UserDTO;
 
@@ -35,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<UserDTO> login(@RequestBody LoginRequestDTO request){
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request){
         return ResponseEntity.ok(userFacade.execute(request));
     }
 
