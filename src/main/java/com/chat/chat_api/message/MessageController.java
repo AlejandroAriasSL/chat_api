@@ -23,7 +23,7 @@ public class MessageController {
         this.messageService = messageService;
     }
 
-      @MessageMapping("/chat/{chatId}/send")
+    @MessageMapping("/chat/{chatId}/send")
     public void sendMessage(@DestinationVariable Long chatId,
                             MessageDTO messageDTO,
                             SimpMessageHeaderAccessor headerAccessor) {
